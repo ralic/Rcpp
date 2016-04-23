@@ -1,3 +1,19 @@
+2013-05-15  Kevin Ushey <kevinushey@gmail.com>
+
+        * src/attributes.cpp: Add a missing 'winslash = "/"'
+
+2013-05-14  J.J. Allaire <jj@rstudio.org>
+
+        * src/attributes.cpp: Correct handling of dependent file paths on Windows (use winslash = "/")
+
+2016-04-13  Dirk Eddelbuettel  <edd@debian.org>
+
+        * DESCRIPTION (Version): Rolling minor version and Date
+
+2016-04-11  Ben Goodrich  <goodrich.ben@gmail.com>
+
+        * R/Module.R: Avoid calling as.character() on C++Object to prevent race
+
 2016-04-02  Dirk Eddelbuettel  <edd@debian.org>
 
         * DESCRIPTION: Rolled to minor version 0.12.4.3

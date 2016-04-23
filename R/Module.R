@@ -1,4 +1,4 @@
-# Copyright (C) 2010 - 2016 John Chambers, Dirk Eddelbuettel and Romain Francois
+# Copyright (C) 2010 - 2014 John Chambers, Dirk Eddelbuettel and Romain Francois
 #
 # This file is part of Rcpp.
 #
@@ -111,7 +111,7 @@ setMethod("initialize", "Module",
 
 .get_Module_Class <- function( x, name, pointer =  .getModulePointer(x) ){
     value <- .Call( Module__get_class, pointer, name )
-    value@generator <-  get("refClassGenerators",envir=x)[[as.character(value)]]
+    value@generator <- get("refClassGenerators", envir=x)[[value@.Data]]
     value
 }
 
@@ -127,6 +127,7 @@ new_CppObject_xp <- function(module, pointer, ...) {
 
 new_dummyObject <- function(...)
     .External( class__dummyInstance, ...)
+
 
 # class method for $initialize
 cpp_object_initializer <- function(.self, .refClassDef, ..., .object_pointer){
@@ -215,7 +216,7 @@ Module <- function( module, PACKAGE = methods::getPackageName(where), where = to
     for( i in seq_along(classes) ){
         CLASS <- classes[[i]]
 
-        clname <- as.character(CLASS)
+        clname <- CLASS@.Data
 
         fields <- cpp_fields( CLASS, where )
         methods <- cpp_refMethods(CLASS, where)
@@ -276,7 +277,7 @@ Module <- function( module, PACKAGE = methods::getPackageName(where), where = to
 
     for( i in seq_along(classes) ){
         CLASS <- classes[[i]]
-        clname <- as.character(CLASS)
+        clname <- CLASS@.Data
         demangled_name <- sub( "^Rcpp_", "", clname )
         .classes_map[[ CLASS@typeid ]] <- storage[[ demangled_name ]] <- .get_Module_Class( module, demangled_name, xp )
 
@@ -435,18 +436,6 @@ cpp_fields <- function( CLASS, where){
      sapply( CLASS@fields, binding_maker, where = where )
 }
 
-.CppClassName <- function(name)
+.CppClassName <- function(name) {
     paste0("Rcpp_",name)
-
-copyObject <- function( obj ){
-    .Call(copy_constructor, obj$.cppclass, obj$.pointer )
-}
-
-destruct <- function(obj){
-    .Call(destructor, obj$.cppclass, obj$.pointer)
-    invisible(NULL)
-}
-
-is_destructed <- function(obj){
-    .Call(is_destructed_impl, obj$.pointer)
 }
